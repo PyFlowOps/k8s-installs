@@ -2,9 +2,9 @@
 
 The code to get a Kubernetes Prometheus/Grafana/Loki system running...
 
-- [Prometheus](https://prometheus.io/)
-- [Grafana](https://grafana.com/docs/grafana/latest/setup-grafana/)
-- [Loki](https://grafana.com/docs/loki/latest/)
+- [Prometheus](https://prometheus.io/){target="_blank"}
+- [Grafana](https://grafana.com/docs/grafana/latest/setup-grafana/){target="_blank"}
+- [Loki](https://grafana.com/docs/loki/latest/){target="_blank"}
 
 # Forward Port to Localhost
 
