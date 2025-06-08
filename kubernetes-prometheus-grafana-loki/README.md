@@ -6,17 +6,6 @@ The code to get a Kubernetes Prometheus/Grafana/Loki system running...
 - [Grafana](https://grafana.com/docs/grafana/latest/setup-grafana/)
 - [Loki](https://grafana.com/docs/loki/latest/)
 
-## Table of Contents
-<!-- TOC -->
-
-- [kubernetes-prometheus-grafana](#kubernetes-prometheus-grafana)
-    - [Table of Contents](#table-of-contents)
-    - [IMPORTANT](#important)
-    - [Install Kubernetes Cluster](#install-kubernetes-cluster)
-    - [Remove Kubernetes Cluster](#remove-kubernetes-cluster)
-
-<!-- /TOC -->
-
 ## IMPORTANT
 
 All commands are run from the context of the `kubernetes-prometheus-grafana-loki` directory.
