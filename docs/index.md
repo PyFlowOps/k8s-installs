@@ -8,3 +8,7 @@ that deploy with Kubernetes.
 PyFlowOps utilizes Prometheus, Grafana, and Loki for observability _(logging, tracing, metrics)_.
 
 See [Documentation Here](./kpgl.md)
+
+## Build Kubernetes Locally (Kind)
+
+See [Local Kubernetes Kind Cluster](./local.md)
