@@ -9,7 +9,7 @@ GREEN		= \033[32m
 # Meta-Goals
 .PHONY: help
 .DEFAULT_GOAL := help
-project := unitytree_core
+project := pfo
 
 default:
 	echo 'Makefile default target!'
@@ -28,15 +28,14 @@ pfo-local-dev: ## Builds the PyFlowOps application within a virtual Python envir
 	#@source ~/.pfo/.env
 	#@echo "Installing pfo Ecosystem local Python environment"
 	@echo "Under Construction"
-	
 
-.PHONY : k8s-unitytree-core-dev-create-cluster k8s-unitytree-core-dev-update-cluster k8s-unitytree-core-dev-remove-cluster
-##@ Section 2: Kubernetes Environment Cluster Commands
+.PHONY: k8s-pfo-create k8s-pfo-update k8s-pfo-remove kubectl-database-init pfo-docker-image-dev pfo-docker-image-prod rabbitmq-consumer-docker-image
+
+##@ Section 2: Kubernetes Cluster Commands
 k8s-pfo-create: ## Builds the PyFlowOps application within a Kubernetes environment (locally)
 	$(info ******** Installing pfo Kubernetes Cluster in Kind ********)
 	#@make kubectl-database-init
-	#@cd deploy || exit 1 && sh start_cluster.sh local
-	@echo "Under Construction"
+	@cd deploy || exit 1 && sh start_cluster.sh local
 
 k8s-pfo-update: ## Updates the PyFlowOps application within a Kubernetes environment (locally)
 	$(info ******** Updating PyFlowOps Kubernetes Cluster in Kind ********)
@@ -67,10 +66,10 @@ pfo-docker-image-prod: ## Builds the pfo Core application within a Docker contai
 	#@docker build -f pfo/Dockerfile.prod -t pfo:latest .
 	@echo "Under Construction"
 
-unitytree-rabbitmq-consumer-docker-image: ## Builds the PyFlowOps RabbitMQ Consumer application within a Docker container
+rabbitmq-consumer-docker-image: ## Builds the PyFlowOps RabbitMQ Consumer application within a Docker container
 	$(info ******** Building RabbitMQ Consumer Docker Image ********)
-	#@git clone git@github.com:The-Unity-Project-LLC/PyFlowOps-RabbitMQ.git rabbitmq-consumer
-	#@cd rabbitmq-consumer || exit 1 && docker build --file Dockerfile.consumer -t unitytree/rabbitmq-consumer:latest .
+	#@git clone git@github.com:PyFlowOps/PyFlowOps-RabbitMQ.git rabbitmq-consumer
+	#@cd rabbitmq-consumer || exit 1 && docker build --file Dockerfile.consumer -t pfo/rabbitmq-consumer:latest .
 	@echo "Under Construction"
 
 ### Help Section

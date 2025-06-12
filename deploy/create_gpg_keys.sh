@@ -2,6 +2,7 @@
 
 set -eou pipefail
 
+BASE="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
 IFS= read -p "Enter the name of the key: [Example] dev.pfo.com - " KEY_NAME
 KEY_NAME=${KEY_NAME:-"dev.pfo.com"}
 IFS= read -p "Enter a comment for the key: [Example] Kubernetes cluster for the dev environment - " KEY_COMMENT
@@ -18,10 +19,10 @@ Name-Comment: ${KEY_COMMENT}
 Name-Real: ${KEY_NAME}
 EOF
 
-UT_FINGERPRINT="$(gpg --list-secret-key "${KEY_NAME}" | sed -n 2,2p | tr -d '[:space:]')"
+FINGERPRINT="$(gpg --list-secret-key "${KEY_NAME}" | sed -n 2,2p | tr -d '[:space:]')"
 
 # We need to add this variable to the config file ~> ~/.pfo/.env
-sh augment_config_file.sh UT_FINGERPRINT "${UT_FINGERPRINT}"
+bash ${BASE}/augment_config_file.sh FINGERPRINT "${FINGERPRINT}"
 
 if [ -f "${HOME}/.sops.yaml" ]; then
     if [[ $(wc -l < "${HOME}/.sops.yaml") == 3 ]]; then
@@ -40,7 +41,7 @@ if [ ! -f "${HOME}/.sops.yaml" ]; then
     {
         printf 'creation_rules:'
         printf '  - pgp: >-'
-        printf '      %s' "${UT_FINGERPRINT}"
+        printf '      %s' "${FINGERPRINT}"
     } >> "${HOME}/.sops.yaml"
 fi
 

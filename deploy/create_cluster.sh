@@ -17,9 +17,10 @@ else
 fi
 
 SCRIPTPATH="$( cd -- "$(dirname "$0")" >/dev/null 2>&1 ; pwd -P )"
+KIND_CONFIG=$(realpath "${SCRIPTPATH}/../kind-config.yaml")
 
 # Create the cluster
-kind create cluster --config ../kind-config.yaml --name ${1}
+kind create cluster --config ${KIND_CONFIG} --name ${1}
 
 # Set the cluster context so that we can talk to it
 kubectl cluster-info --context kind-${1}
