@@ -26,12 +26,12 @@ pfo-local-dev: ## Builds the PyFlowOps application within a virtual Python envir
 .PHONY: k8s-pfo-create k8s-pfo-update k8s-pfo-remove kubectl-database-init pfo-docker-image-dev pfo-docker-image-prod rabbitmq-consumer-docker-image
 
 ##@ Section 2: Kubernetes Cluster Commands
-kube-pfo-create: ## Builds the PyFlowOps application within a Kubernetes environment (locally)
+k8s-pfo-create: ## Builds the PyFlowOps application within a Kubernetes environment (locally)
 	$(info ******** Installing pfo Kubernetes Cluster in Kind ********)
 	#@make kubectl-database-init
 	@cd deploy || exit 1 && sh start_cluster.sh local
 
-kube-pfo-update: ## Updates the PyFlowOps application within a Kubernetes environment (locally)
+k8s-pfo-update: ## Updates the PyFlowOps application within a Kubernetes environment (locally)
 	$(info ******** Updating PyFlowOps Kubernetes Cluster in Kind ********)
 	@cd deploy || exit 1 && sh update_cluster.sh local
 	@kubectl config set-context --current --namespace=local
@@ -39,12 +39,12 @@ kube-pfo-update: ## Updates the PyFlowOps application within a Kubernetes enviro
 	@cd deploy || exit 1 && sh start_cluster.sh local
 	@echo "Under Construction"
 
-kube-pfo-remove: ## Removes the PyFlowOps application within a Kubernetes environment (locally)
+k8s-pfo-remove: ## Removes the PyFlowOps application within a Kubernetes environment (locally)
 	$(info ******** Removing PyFlowOps Kubernetes Cluster in Kind ********)
 	#cd deploy || exit 1 && sh delete_local_cluster.sh pfo-local
 	@echo "Under Construction"
 
-kubectl-database-init:
+k8s-database-init:
 	$(info ******** Running the Database Initialization ********)
 	#@bash scripts/local_k8s/database-init.sh
 	@echo "Under Construction"
@@ -68,4 +68,4 @@ rabbitmq-consumer-docker-image: ## Builds the PyFlowOps RabbitMQ Consumer applic
 
 ### Help Section
 help:
-	@awk 'BEGIN {FS = ":.*##"; printf "Usage: make \033[36m<target>\033[0m\n"} /^[a-zA-Z_-]+:.*?##/ { printf "  \033[36m%-10s\033[0m %s\n", $$1, $$2 } /^##@/ { printf "\n\033[1m%s\033[0m\n", substr($$0, 5) } ' $(MAKEFILE_LIST)
+	@awk 'BEGIN {FS = ":.*##"; printf "Usage: make \033[36m<target>\033[0m\n"} /^[a-zA-Z0-9_-]+:.*?##/ { printf "  \033[36m%-10s\033[0m %s\n", $$1, $$2 } /^##@/ { printf "\n\033[1m%s\033[0m\n", substr($$0, 5) } ' $(MAKEFILE_LIST)
