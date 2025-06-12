@@ -1,0 +1,84 @@
+name: Manual Toml Version Check
+
+on:
+  workflow_call:
+    outputs:
+      package_version:
+        description: 'The package version from pyproject.toml or pfo.json'
+        value: ${{ jobs.versions.outputs.package_version }}
+
+      latest_version:
+        description: 'The latest version (Published Release)'
+        value: ${{ jobs.versions.outputs.latest_version }}
+
+      draft_version:
+        description: 'The latest version (Draft Release)'
+        value: ${{ jobs.versions.outputs.draft_version }}
+
+    secrets:
+      GH_TOKEN:
+        description: 'GitHub token for authentication'
+        required: true
+
+jobs:
+  versions:
+    name: Project Versions
+    runs-on: 'ubuntu-latest'
+    outputs:
+      package_version: ${{ steps.package-version.outputs.package_version }}
+      latest_version: ${{ steps.latest-version.outputs.latest_version }}
+      draft_version: ${{ steps.draft-version.outputs.draft_version }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Python Setup
+        uses: actions/setup-python@v5
+        with:
+          python-version: 3.12.6
+  
+      - name: Install PyTOML
+        run: pip install -r ${{ github.workspace }}/.github/workflows/src/requirements.txt
+        shell: bash
+  
+      - name: Package Version
+        id: package-version
+        run: |
+          #!/bin/bash
+          echo "Getting version from pyproject.toml file"
+          if [[ -f "${{ github.workspace }}/pyproject.toml" ]]; then
+            _version=$(python ${{ github.workspace }}/.github/workflows/src/project_versions.py --toml)
+          fi
+          
+          echo "Getting version from pfo.json file"
+          if [[ -f "${{ github.workspace }}/pfo.json" ]]; then
+            _version=$(python ${{ github.workspace }}/.github/workflows/src/project_versions.py --pfo)
+          fi
+          
+          echo "Package Version: $_version"
+          echo "package_version=$_version" >> $GITHUB_OUTPUT
+        shell: bash
+
+      - name: Current Release Version
+        id: latest-version
+        env:
+          GH_TOKEN: ${{ secrets.GH_TOKEN }}
+        run: |
+          #!/bin/bash
+          echo "Getting latest release version"
+          _version=$(python ${{ github.workspace }}/.github/workflows/src/project_versions.py --latest)
+          echo "Latest Release Version: $_version"
+          echo "latest_version=$_version" >> $GITHUB_OUTPUT
+        shell: bash
+
+      - name: Draft Release Version
+        id: draft-version
+        env:
+          GH_TOKEN: ${{ secrets.GH_TOKEN }}
+        run: |
+          #!/bin/bash
+          echo "Getting draft release version"
+          _version=$(python ${{ github.workspace }}/.github/workflows/src/project_versions.py --draft_release)
+          echo "Draft Release Version: $_version"
+          echo "draft_version=${_version}" >> $GITHUB_OUTPUT
+        shell: bash
