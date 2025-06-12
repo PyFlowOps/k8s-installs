@@ -1,11 +1,5 @@
 shell = ${SHELL}
 
-# Text Formatting
-NO_FORMAT	= \033[0m
-BOLD		= \033[1m
-RED 		= \033[31m
-GREEN		= \033[32m
-
 # Meta-Goals
 .PHONY: help
 .DEFAULT_GOAL := help
@@ -32,20 +26,20 @@ pfo-local-dev: ## Builds the PyFlowOps application within a virtual Python envir
 .PHONY: k8s-pfo-create k8s-pfo-update k8s-pfo-remove kubectl-database-init pfo-docker-image-dev pfo-docker-image-prod rabbitmq-consumer-docker-image
 
 ##@ Section 2: Kubernetes Cluster Commands
-k8s-pfo-create: ## Builds the PyFlowOps application within a Kubernetes environment (locally)
+kube-pfo-create: ## Builds the PyFlowOps application within a Kubernetes environment (locally)
 	$(info ******** Installing pfo Kubernetes Cluster in Kind ********)
 	#@make kubectl-database-init
 	@cd deploy || exit 1 && sh start_cluster.sh local
 
-k8s-pfo-update: ## Updates the PyFlowOps application within a Kubernetes environment (locally)
+kube-pfo-update: ## Updates the PyFlowOps application within a Kubernetes environment (locally)
 	$(info ******** Updating PyFlowOps Kubernetes Cluster in Kind ********)
-	#@cd deploy || exit 1 && sh update_cluster.sh local
-	#@kubectl config set-context --current --namespace=local
+	@cd deploy || exit 1 && sh update_cluster.sh local
+	@kubectl config set-context --current --namespace=local
 	#@kubectl apply -f deploy/local/pfo/pfo-deployment.yaml
-	#@cd deploy || exit 1 && sh start_cluster.sh local
+	@cd deploy || exit 1 && sh start_cluster.sh local
 	@echo "Under Construction"
 
-k8s-pfo-remove: ## Removes the PyFlowOps application within a Kubernetes environment (locally)
+kube-pfo-remove: ## Removes the PyFlowOps application within a Kubernetes environment (locally)
 	$(info ******** Removing PyFlowOps Kubernetes Cluster in Kind ********)
 	#cd deploy || exit 1 && sh delete_local_cluster.sh pfo-local
 	@echo "Under Construction"
