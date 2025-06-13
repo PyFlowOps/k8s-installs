@@ -1,6 +1,9 @@
 #!/usr/bin/env bash
 set -eou pipefail
 
+SCRIPTPATH="$( cd -- "$(dirname "$0")" >/dev/null 2>&1 ; pwd -P )"
+KIND_CONFIG=$(realpath "${SCRIPTPATH}/kind-config.yaml")
+
 if ! command -v kind > /dev/null 2>&1; then
     echo "Command 'kind' not found"
     exit 0
@@ -16,9 +19,6 @@ else
     fi
 fi
 
-SCRIPTPATH="$( cd -- "$(dirname "$0")" >/dev/null 2>&1 ; pwd -P )"
-KIND_CONFIG=$(realpath "${SCRIPTPATH}/../kind-config.yaml")
-
 # Create the cluster
 kind create cluster --config ${KIND_CONFIG} --name ${1}
 
@@ -29,7 +29,6 @@ kubectl cluster-info --context kind-${1}
 cd "${SCRIPTPATH}" || exit 1 && bash -l update_cluster.sh ${1}
 
 # Port-forward service so we can visit it in a browser
-# Django will be available at http://localhost:8000 by default
 #kubectl port-forward service/pfo-web 8000:80 --context kind-${1} &
 
 # We need to set the context for kubectl to talk to the cluster
