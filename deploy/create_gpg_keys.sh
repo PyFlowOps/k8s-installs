@@ -46,8 +46,8 @@ if [ ! -f "${HOME}/.sops.yaml" ]; then
 fi
 
 # Let's export the public key
-gpg --export -a \""${KEY_NAME}"\" > "${HOME}/.pfo/public.key"
-gpg --export-secret-key -a \""${KEY_NAME}"\" > "${HOME}/.pfo/private.key"
+gpg --export -a \""${KEY_NAME}"\" > "${HOME}/.pfo/keys/pfo.pub"
+gpg --export-secret-key -a \""${KEY_NAME}"\" > "${HOME}/.pfo./keys/pfo"
 
 # Let's encrypt a file
 # sops -e secrets.yaml > secrets.yaml.enc
