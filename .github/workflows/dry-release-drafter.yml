@@ -12,8 +12,11 @@ on:
         # but we can specify it here to indicate that it is required for this workflow
         required: true
 
+
 permissions:
-  contents: write
+  contents: read
+  pull-requests: write
+
 
 jobs:
   draft-version:
