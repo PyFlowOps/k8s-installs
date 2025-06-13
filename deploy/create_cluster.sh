@@ -26,13 +26,10 @@ kind create cluster --config ${KIND_CONFIG} --name ${1}
 kubectl cluster-info --context kind-${1}
 
 # Update cluster with manifests/specs
-cd "${SCRIPTPATH}" || exit 1 && bash -l update_cluster.sh ${1}
+bash -l ${SCRIPTPATH}/update_cluster.sh ${1}
 
 # Port-forward service so we can visit it in a browser
 #kubectl port-forward service/pfo-web 8000:80 --context kind-${1} &
 
 # We need to set the context for kubectl to talk to the cluster
 kubectl config set-context --current --namespace=${1}
-
-chmod -x "${SCRIPTPATH}/update_cluster.sh"
-cd - || exit 1  # Return to the script folder
