@@ -1,47 +1,44 @@
 #!/usr/bin/env bash
 set -eou pipefail
 
-# Let's ensure that the public and private keys exist
-if [ ! -f "${HOME}/.pfo/private.key" ]; then
-    echo "Private key not found. Please run 'deploy/create_gpg_keys.sh' to create the keys or download them and import them with gpg."
-    exit 1
-fi
-
-if [ ! -f "${HOME}/.pfo/public.key" ]; then
-    echo "Public key not found. Please run 'deploy/create_gpg_keys.sh' to create the keys or download them and import them with gpg."
-    exit 1
-fi
-
 # PATH DATA
 SCRIPTPATH="$( cd -- "$(dirname "$0")" >/dev/null 2>&1 ; pwd -P )"
 BASE="${SCRIPTPATH}/.."
-PFO_DOCS=$(realpath ${BASE}/pfo-docs)
-PFO_DOCS_REPO="https://github.com/PyFlowOps/documentation.git"
-#UNITYTREE_UIUX=${BASE}/ui-ux
-#UNITYTREE_DEVTOOLS=${BASE}/ut_devtools
-#UNITYTREE_QA=${BASE}/qa
 
-GITHUB=git@github.com
+# Let's get a list of our repos in PyFlowOps org
+pfo_repos=($(gh repo list PyFlowOps --json name -q '.[].name'))
+echo "Repos in PyFlowOps org: ${pfo_repos[*]}"
+
+[[ ! -d "/tmp/.pfo" ]] && mkdir -p /tmp/.pfo # Temp folder for cloning repos
+
+# Examples of other repos we may want to pull
 GITHUBORG=PyFlowOps
 EPOCH_DATE=$(date +%s)
+
+#PFO_UIUX=${BASE}/ui-ux
+#PFO_DEVTOOLS=${BASE}/ut_devtools
+#PFO_QA=${BASE}/qa
+
+PFO_DOCS=$(realpath ${BASE}/pfo-docs)
+PFO_DOCS_REPO="https://github.com/PyFlowOps/documentation.git"
 
 ### Image data ###
 PFO_DOCS_LOCAL_IMAGE=pfo-docs:k8s-local
 PFO_DOCS_LOCAL_VERSIONED_IMAGE=pfo-docs:k8s-local-${EPOCH_DATE}
 PFO_DOCS_REPO="${GITHUB}/${GITHUBORG}/documentation.git"
 
-#K8S_UIUX_LOCAL_IMAGE=unitytree-uiux:k8s-local
-#K8S_UIUX_LOCAL_VERSIONED_IMAGE=unitytree-uiux:k8s-local-${EPOCH_DATE}
+#PFO_UIUX_LOCAL_IMAGE=pfo-uiux:k8s-local
+#PFO_UIUX_LOCAL_VERSIONED_IMAGE=pfo-uiux:k8s-local-${EPOCH_DATE}
 
 # Developer tools image
-#K8S_DEVTOOLS_LOCAL_IMAGE=ut-dev-tools:k8s-local
+#PFO_DEVTOOLS_LOCAL_IMAGE=pfo-dev-tools:k8s-local
 
-# Unitytree QA Image
-#K8S_QA_LOCAL_IMAGE=unitytree-qa:k8s-local
+# PFO QA Image
+#PFO_QA_LOCAL_IMAGE=pfo-qa:k8s-local
 
 # RabbitMQ
-#K8S_RABBITMQ_LOCAL_IMAGE=pfo-rabbitmq:k8s-local
-#K8S_RABBITMQ_LOCAL_VERSIONS_IMAGE=pfo-rabbitmq:k8s-local-${EPOCH_DATE}
+#PFO_RABBITMQ_LOCAL_IMAGE=pfo-rabbitmq:k8s-local
+#PFO_RABBITMQ_LOCAL_VERSIONS_IMAGE=pfo-rabbitmq:k8s-local-${EPOCH_DATE}
 
 # shellcheck disable=SC2034
 K8S_STATIC_FILES_IMAGE=kind
@@ -50,7 +47,6 @@ config_file() {
     # This function takes a variable as an argument and will add it to the .env file within the ~/.pfo folder.
     # The config file will be used to set the variable passed into the script
     # The config file will be sourced in the script, after all the variables have been set
-
     date=$(date '+%Y-%m-%d %H:%M:%S') # This will be used to add a timestamp to the config file comment
     if [[ -f "${HOME}/.pfo/.env" ]]; then
         # Let's add some values to the config file for sourcing
@@ -68,22 +64,17 @@ config_file() {
             } >> "${HOME}/.pfo/.env"
         fi
     else
-        if [[ ! -d ${HOME}/.pfo ]]; then
-            echo "Creating .pfo folder in ${HOME}"
-            mkdir -p "${HOME}/.pfo"
-        else
-            # Create the config file
-            echo "Creating config file"
-            touch "${HOME}/.pfo/.env"
-            {
-                printf '##### PyFlowOps Kubernetes Config File #####'
-                printf '\n'
-                printf '# Kubernetes Variable added from %s on %s' "${0}" "${date}"
-                printf '\n'
-                printf '%s=%s' "${1}" "${!1}"
-                printf '\n'
-            } >> "${HOME}/.pfo/.env"
-        fi
+        # Create the config file
+        echo "Creating config file"
+        touch "${HOME}/.pfo/.env"
+        {
+            printf '##### PyFlowOps Kubernetes Config File #####'
+            printf '\n'
+            printf '# Kubernetes Variable added from %s on %s' "${0}" "${date}"
+            printf '\n'
+            printf '%s=%s' "${1}" "${!1}"
+            printf '\n'
+        } >> "${HOME}/.pfo/.env"
     fi
 }
 
@@ -94,9 +85,9 @@ config_file PFO_DOCS_LOCAL_VERSIONED_IMAGE
 #config_file K8S_UIUX_LOCAL_VERSIONED_IMAGE
 #config_file K8S_DEVTOOLS_LOCAL_IMAGE
 #config_file K8S_QA_LOCAL_IMAGE
-config_file K8S_RABBITMQ_LOCAL_IMAGE
-config_file K8S_RABBITMQ_LOCAL_VERSIONS_IMAGE
-#config_file K8S_STATIC_FILES_IMAGE
+#config_file K8S_RABBITMQ_LOCAL_IMAGE
+#config_file K8S_RABBITMQ_LOCAL_VERSIONS_IMAGE
+config_file K8S_STATIC_FILES_IMAGE
 
 repo_pulls() {
     ##### Clone Documentation repo #####
@@ -113,24 +104,25 @@ repo_pulls() {
 
 ##### LOCAL VERSIONED IMAGES #####
 build() {
-    ##### Unity Tree Core #####
-    cd ${BASE} || exit 1 && docker build -t "${K8S_CORE_LOCAL_IMAGE}" -f "${UNITYTREE_CORE}/Dockerfile.dev" .
+    ##### PFO Core #####
+    cd ${BASE} || exit 1 && docker build -t "${PFO_DOCS_LOCAL_IMAGE}" -f "${PFO_DOCS}/Dockerfile" .
     if "${OPT_V}" '==' "true"; then
-        docker tag "${K8S_CORE_LOCAL_IMAGE}" "${K8S_CORE_LOCAL_VERSIONED_IMAGE}" # Additional versioned tag
+        docker tag "${PFO_DOCS_LOCAL_IMAGE}" "${PFO_DOCS_LOCAL_VERSIONED_IMAGE}" # Additional versioned tag
     fi
 
-    ##### Unity Tree UI-UX #####
-    cd ${BASE} || exit 1 && docker build -t ${K8S_UIUX_LOCAL_IMAGE} -f "${UNITYTREE_UIUX}/Dockerfile" .
-    if "${OPT_V}" '==' "true"; then
-        docker tag "${K8S_UIUX_LOCAL_IMAGE}" "${K8S_UIUX_LOCAL_VERSIONED_IMAGE}" # Additional versioned tag
-    fi
+    # Examples of other repos we may want to pull
+    ##### PFO UI-UX #####
+    # cd ${BASE} || exit 1 && docker build -t ${K8S_UIUX_LOCAL_IMAGE} -f "${UNITYTREE_UIUX}/Dockerfile" .
+    # if "${OPT_V}" '==' "true"; then
+    #     docker tag "${K8S_UIUX_LOCAL_IMAGE}" "${K8S_UIUX_LOCAL_VERSIONED_IMAGE}" # Additional versioned tag
+    # fi
 
-    ##### Unity Tree Developer Tools #####
-    cd ${BASE} || exit 1 && docker build -t ${K8S_DEVTOOLS_LOCAL_IMAGE} -f "${UNITYTREE_DEVTOOLS}/Dockerfile" "${UNITYTREE_DEVTOOLS}"
+    ##### PFO Developer Tools #####
+    # cd ${BASE} || exit 1 && docker build -t ${K8S_DEVTOOLS_LOCAL_IMAGE} -f "${UNITYTREE_DEVTOOLS}/Dockerfile" "${UNITYTREE_DEVTOOLS}"
 
-    ##### Unity Tree QA Image #####
+    ##### PFO QA Image #####
     # Context -- "${UNITYTREE_QA}"
-    cd ${BASE} || exit 1 && docker build -t ${K8S_QA_LOCAL_IMAGE} -f "${UNITYTREE_QA}/Dockerfile" .
+    # cd ${BASE} || exit 1 && docker build -t ${K8S_QA_LOCAL_IMAGE} -f "${UNITYTREE_QA}/Dockerfile" .
 
 }
 
@@ -146,22 +138,24 @@ kind_deploy() {
 
     cd "${BUILD_PATH}" || exit 1 # We want to run KusoMize from the uat folder
     if "${OPT_V}" '==' "true"; then
-        kustomize edit set image unitytree-core:k8s-local="${K8S_CORE_LOCAL_VERSIONED_IMAGE}"
-        kustomize edit set image unitytree-uiux:k8s-local="${K8S_UIUX_LOCAL_VERSIONED_IMAGE}"
-        kustomize edit set image unitytree-uiux:k8s-local="${K8S_DEVTOOLS_LOCAL_IMAGE}"
-        kustomize edit set image unitytree-qa:k8s-local="${K8S_QA_LOCAL_IMAGE}"
+        :
+        #kustomize edit set image unitytree-core:k8s-local="${K8S_CORE_LOCAL_VERSIONED_IMAGE}"
+        #kustomize edit set image unitytree-uiux:k8s-local="${K8S_UIUX_LOCAL_VERSIONED_IMAGE}"
+        #kustomize edit set image unitytree-uiux:k8s-local="${K8S_DEVTOOLS_LOCAL_IMAGE}"
+        #kustomize edit set image unitytree-qa:k8s-local="${K8S_QA_LOCAL_IMAGE}"
     else
-        kustomize edit set image unitytree-core:k8s-local="${K8S_CORE_LOCAL_IMAGE}"
-        kustomize edit set image unitytree-uiux:k8s-local="${K8S_UIUX_LOCAL_IMAGE}"
-        kustomize edit set image unitytree-uiux:k8s-local="${K8S_DEVTOOLS_LOCAL_IMAGE}"
-        kustomize edit set image unitytree-qa:k8s-local="${K8S_QA_LOCAL_IMAGE}"
+        :
+        #kustomize edit set image unitytree-core:k8s-local="${K8S_CORE_LOCAL_IMAGE}"
+        #kustomize edit set image unitytree-uiux:k8s-local="${K8S_UIUX_LOCAL_IMAGE}"
+        #kustomize edit set image unitytree-uiux:k8s-local="${K8S_DEVTOOLS_LOCAL_IMAGE}"
+        #kustomize edit set image unitytree-qa:k8s-local="${K8S_QA_LOCAL_IMAGE}"
     fi
 
     kustomize build . | kubectl apply -f - # Apply the kustomize build to the cluster
     kubectl cluster-info --context kind-${e}
-    kind load docker-image "${K8S_CORE_LOCAL_IMAGE}" --name ${e} --nodes ${e}-worker,${e}-worker2,${e}-worker3 -v 10
-    kind load docker-image "${K8S_DEVTOOLS_LOCAL_IMAGE}" --name ${e} --nodes ${e}-worker,${e}-worker2,${e}-worker3 -v 10
-    kind load docker-image "${K8S_QA_LOCAL_IMAGE}" --name ${e} --nodes ${e}-worker,${e}-worker2,${e}-worker3 -v 10
+    #kind load docker-image "${K8S_CORE_LOCAL_IMAGE}" --name ${e} --nodes ${e}-worker,${e}-worker2,${e}-worker3 -v 10
+    #kind load docker-image "${K8S_DEVTOOLS_LOCAL_IMAGE}" --name ${e} --nodes ${e}-worker,${e}-worker2,${e}-worker3 -v 10
+    #kind load docker-image "${K8S_QA_LOCAL_IMAGE}" --name ${e} --nodes ${e}-worker,${e}-worker2,${e}-worker3 -v 10
 
     cd "${SCRIPTPATH}" || exit 1  # Return to the script folder
 }
