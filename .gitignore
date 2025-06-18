@@ -1,5 +1,5 @@
 # Local .gitignore file for Python projects
-deploy/local
+#deploy/local
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
