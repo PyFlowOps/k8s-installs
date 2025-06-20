@@ -1,0 +1,51 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app.kubernetes.io/name: documentation
+  name: documentation
+  namespace: {{ cookiecutter.namespace }}  # Sets Namespace
+spec:
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: documentation
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: documentation
+    spec:
+      containers:
+        - name: documentation
+          image: documentation:{{ cookiecutter.image_tag }}
+          imagePullPolicy: Never  # The image is pre-loaded using 'kind load docker-image'
+          # Enironment Vars from Secrets examples
+          env:
+            - name: APP_NAME
+              value: documentation
+            # Postgres
+            #- name: POSTGRES_DB
+            #  valueFrom:
+            #    secretKeyRef:
+            #      name: secret
+            #      key: POSTGRES_DB
+            #- name: POSTGRES_USER
+            #  valueFrom:
+            #    secretKeyRef:
+            #      name: secret
+            #      key: POSTGRES_USER
+            #- name: POSTGRES_PASSWORD
+            #  valueFrom:
+            #    secretKeyRef:
+            #      name: secret
+            #      key: POSTGRES_PASSWORD
+            #- name: DATABASE_URL
+            #  value: postgres://$(POSTGRES_USER):$(POSTGRES_PASSWORD)@$(UT_POSTGRES_DB_SERVICE_HOST):$(UT_POSTGRES_DB_SERVICE_PORT)/$(POSTGRES_DB)
+          ports:
+            - containerPort: 8100
+          resources:
+            limits:
+              cpu: 200m
+              memory: 128Mi
+            requests:
+              cpu: 100m
+              memory: 64Mi

@@ -1,0 +1,4 @@
+{
+    "namespace": "local",
+    "__image_tag": "{{ cookiecutter.namespace }}"
+}
