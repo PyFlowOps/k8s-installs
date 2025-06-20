@@ -1,4 +1,5 @@
 {
     "namespace": "local",
+    "__project_name": "k8s",
     "__image_tag": "{{ cookiecutter.namespace }}"
 }
