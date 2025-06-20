@@ -1,0 +1,13 @@
+kind: Service
+apiVersion: v1
+metadata:
+  name: documentation
+  namespace: local  # Sets Namespace
+spec:
+  type: ClusterIP
+  selector:
+    app.kubernetes.io/name: documentation
+  ports:
+    - protocol: TCP
+      port: 8100
+      targetPort: 8100

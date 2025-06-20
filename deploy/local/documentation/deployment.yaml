@@ -4,7 +4,7 @@ metadata:
   labels:
     app.kubernetes.io/name: documentation
   name: documentation
-  namespace: {{ cookiecutter.namespace }}  # Sets Namespace
+  namespace: local  # Sets Namespace
 spec:
   selector:
     matchLabels:
@@ -16,7 +16,7 @@ spec:
     spec:
       containers:
         - name: documentation
-          image: documentation:{{ cookiecutter.__image_tag }}
+          image: documentation:local
           imagePullPolicy: Never  # The image is pre-loaded using 'kind load docker-image'
           # Enironment Vars from Secrets examples
           env:
