@@ -16,7 +16,7 @@ spec:
     spec:
       containers:
         - name: documentation
-          image: documentation:{{ cookiecutter.__image_tag }}
+          image: ghcr.io/pyflowops/documentation:{{ cookiecutter.__image_tag }}
           imagePullPolicy: Never  # The image is pre-loaded using 'kind load docker-image'
           # Enironment Vars from Secrets examples
           env:
