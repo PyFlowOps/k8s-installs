@@ -68,6 +68,8 @@ jobs:
           python ${{ github.workspace }}/.github/workflows/src/initial_release.py
 
   dataReportJob:
+    needs: [check-trigger]
+    if: needs.check-trigger.outputs.should_run == 'true'
     runs-on: ubuntu-latest
     outputs:
       is_pr_merge: ${{ steps.check_pr.outputs.is_pr_merge }}
@@ -134,7 +136,6 @@ jobs:
       GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
   update_release_draft:
-    if: needs.dataReportJob.outputs.is_pr_merge == 'true'
     uses: ./.github/workflows/dry-release-drafter.yml
     needs: [set-release-version, dataReportJob]
     with:
