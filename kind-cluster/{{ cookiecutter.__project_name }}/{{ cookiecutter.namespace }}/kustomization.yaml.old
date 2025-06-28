@@ -1,0 +1,18 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+resources:
+- base/
+
+# This section is going to be re-serialized and the image array will be populated with data
+# from the pfo CLI.
+images: []
+  # Examples:
+    #- name: unitytree-qa:k8s-local
+    #  newName: unitytree-qa
+    #  newTag: k8s-local
+    #- name: unitytree-uiux:k8s-local
+    #  newName: ut-dev-tools
+    #  newTag: k8s-local
+    #- name: ut-dev-tools:k8s-local
+    #  newName: ut-dev-tools
+    #  newTag: k8s-local

@@ -8,12 +8,12 @@ spec:
 
   # Allow applications to deploy to these clusters
   destinations:
-    - namespace: argocd
-      server: https://kubernetes.default.svc  # Use the default Kubernetes API server
+    - namespace: '*'
+      server: '*'  # Use the default Kubernetes API server
 
   # Allow using these Git repositories
   sourceRepos:
-    - 'https://github.com/pyflowops/documentation.git'
+    - '*'
 
   # Limit which kinds of resources can be deployed (optional)
   clusterResourceWhitelist:
