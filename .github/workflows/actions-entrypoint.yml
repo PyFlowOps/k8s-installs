@@ -8,9 +8,6 @@ on:
 
   pull_request:
     types:
-      - opened
-      - synchronize
-      - reopened
       - closed
 
 permissions:
@@ -56,7 +53,6 @@ jobs:
   # This will get our current version of the package from the pyproject.toml file
   # We will need this to use for comparison within the release draft
   call-versions:
-    if: github.event_name == 'pull_request'
     needs: [call-unit-tests]
     uses: ./.github/workflows/dry-versions.yml
     secrets:
