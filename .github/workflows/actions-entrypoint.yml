@@ -68,8 +68,6 @@ jobs:
           python ${{ github.workspace }}/.github/workflows/src/initial_release.py
 
   dataReportJob:
-    needs: [check-trigger]
-    if: needs.check-trigger.outputs.should_run == 'true'
     runs-on: ubuntu-latest
     outputs:
       is_pr_merge: ${{ steps.check_pr.outputs.is_pr_merge }}
