@@ -1,0 +1,40 @@
+apiVersion: argoproj.io/v1alpha1
+kind: AppProject
+metadata:
+  name: pyflowops
+  namespace: argocd   # This is the namespace where Argo CD is installed (commonly 'argocd')
+spec:
+  description: Example project to manage applications for my team
+
+  # Allow applications to deploy to these clusters
+  destinations:
+    - namespace: '*'
+      server: '*'
+
+  # Allow using these Git repositories
+  sourceRepos:
+    - 'https://github.com/pyflowops/documentation.git'
+
+  # Limit which kinds of resources can be deployed (optional)
+  clusterResourceWhitelist:
+    - group: '*'
+      kind: '*'
+
+  # Define who can access this project (optional)
+  # role:
+  #   - name: read-only
+  #     description: Read-only access
+  #     policies:
+  #       - p, proj:my-project:read-only, applications, get, my-project/*, allow
+  #     groups:
+  #       - myteam:readers
+
+  # Enforce resource quotas or limits (optional)
+  # namespaceResourceBlacklist:
+  #   - group: 'networking.k8s.io'
+  #     kind: 'Ingress'
+
+  # Optional: Require specific cluster resources or annotations
+  # clusterResourceBlacklist:
+  #   - group: '*'
+  #     kind: 'PersistentVolume'
