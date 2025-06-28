@@ -2,7 +2,7 @@
   "name": "k8s-installs",
   "package_path": ".",
   "repo": "git@github.com:PyFlowOps/k8s-installs.git",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "registrant": {
     "user": "Philip De Lorenzo",
     "email": "philip.delorenzo@gmail.com"
@@ -10,6 +10,6 @@
   "changelog": {
     "user": "Philip De Lorenzo",
     "email": "philip.delorenzo@gmail.com",
-    "date": "2025-06-27 18:21:44"
+    "date": "2025-06-27 18:52:53"
   }
 }
