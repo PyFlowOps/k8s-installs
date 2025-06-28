@@ -4,6 +4,7 @@ resources:
 - storage/
 - storage-class.yaml
 - namespace.yaml
+- argocd/
 
 # This section is going to be re-serialized and the image array will be populated with data
 # from the pfo CLI.
