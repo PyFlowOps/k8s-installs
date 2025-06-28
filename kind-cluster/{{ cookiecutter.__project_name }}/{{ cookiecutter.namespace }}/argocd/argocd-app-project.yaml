@@ -8,8 +8,8 @@ spec:
 
   # Allow applications to deploy to these clusters
   destinations:
-    - namespace: '*'
-      server: '*'
+    - namespace: argocd
+      server: https://kubernetes.default.svc  # Use the default Kubernetes API server
 
   # Allow using these Git repositories
   sourceRepos:
