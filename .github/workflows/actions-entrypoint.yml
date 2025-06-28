@@ -31,6 +31,14 @@ jobs:
           echo "Running initial release job..."
           python ${{ github.workspace }}/.github/workflows/src/initial_release.py
 
+      - name: Report
+        run: |
+          echo "Running report job..."
+          echo "Job Type: ${{ github.event_name }}"
+          echo "Repository: ${{ github.repository }}"
+          echo "Branch: ${{ github.ref }}"
+          echo "Commit: ${{ github.sha }}"
+
   dataReportJob:
     runs-on: ubuntu-latest
     steps:
