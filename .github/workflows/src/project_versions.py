@@ -111,7 +111,6 @@ def prechecks(obj: list[dict]) -> bool:
         raise Exception(
             "There must be a version in either pyproject.toml or pfo.json to set the draft release."
         )
-    
 
     if not _draftrelease:
         # We need to make sure that the new draft version is higher than the any current pre-releases, or published releases
@@ -286,7 +285,7 @@ def get_pfo_version() -> str:
     return pfo_data["version"]
 
 
-def get_draft_release_version(obj: list[dict]) -> str:
+def get_draft_release_version(obj: list[dict]) -> str|None:
     """
     Reads the latest draft release from the repository.
 
@@ -306,7 +305,7 @@ def get_draft_release_version(obj: list[dict]) -> str:
     return _draftrelease[0] if _draftrelease else None
 
 
-def get_latest_version(obj: list[dict]) -> str:
+def get_latest_version(obj: list[dict]) -> str|None:
     """
     Reads the latest version from the repository.
 
@@ -324,7 +323,7 @@ def get_latest_version(obj: list[dict]) -> str:
     return _latest[0] if _latest else None
 
 
-def get_prerelease_version(obj: list[dict]) -> str:
+def get_prerelease_version(obj: list[dict]) -> str|None:
     """
     Reads the latest prerelease from the repository.
 
@@ -342,7 +341,7 @@ def get_prerelease_version(obj: list[dict]) -> str:
     return _prerelease[0] if _prerelease else None
 
 
-def draft_release(obj: list[dict]) -> str:
+def draft_release(obj: list[dict]) -> str|None:
     """
     Reads the version from the draft release.
 
