@@ -9,7 +9,7 @@ spec:
     namespace: local # The target namespace in your Kubernetes cluster
     server: https://kubernetes.default.svc # The Kubernetes API server URL (usually the in-cluster default)
   source:
-    repoURL: https://github.com/pyflowops/documentation.git
+    repoURL: git@github.com:pyflowops/documentation.git
     path: manifests/local/overlays # This tells ArgoCD to look in the 'k8s/production' directory
     targetRevision: main # Track the 'main' branch
   syncPolicy:
