@@ -1,0 +1,19 @@
+# Create this as dashboard-ingressroute.yaml
+apiVersion: traefik.io/v1alpha1
+kind: IngressRoute
+metadata:
+  name: traefik-dashboard
+  namespace: traefik
+spec:
+  entryPoints:
+    - websecure
+  routes:
+    - match: Host(`traefik.pyflowops.local`) && PathPrefix(`/dashboard`)
+      kind: Rule
+      services:
+        - name: api@internal
+          kind: TraefikService
+      middlewares:
+        - name: dashboard-stripprefix
+          namespace: traefik
+  tls: {}
