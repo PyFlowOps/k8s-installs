@@ -1,44 +1,21 @@
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
-  name: multi-app-ingress
-  namespace: local # Or the namespace where your services are
-  annotations:
-    # This annotation is specific to the NGINX Ingress Controller.
-    # It tells the Ingress Controller to rewrite the URL path before sending it to the backend service.
-    # For example, if a request comes in for /app1/about, the service will receive /about.
-    # The /$2 captures everything after the first slash in the path and uses it as the new path.
-    # This is crucial if your backend application expects the root path (e.g., /)
-    # rather than the full Ingress path (e.g., /app1).
-    nginx.ingress.kubernetes.io/rewrite-target: /$2
-    # This annotation is required if you are using regular expressions in your paths.
-    nginx.ingress.kubernetes.io/use-regex: "true"
+  name: argdocd-server-ingress
+  namespace: default
+  #annotations:
+    # Optional: You don't need this if you use ingressClassName
+    #kubernetes.io/ingress.class: traefik
 spec:
+  ingressClassName: traefik
   rules:
-    # Rule for a single host, routing based on path
-    - host: localhost # Your chosen domain name
-      http:
-        paths:
-          # Path for Application 1
-          - path: /documentation(/|$)(.*) # Matches /app1 or /app1/anything
-            pathType: Prefix # Can also be 'Exact' for exact matches
-            backend:
-              service:
-                name: documentation # Name of Service for Application 1 (e.g., a ClusterIP Service)
-                port:
-                  number: 8100         # Port of Application 1's Service (internal port)
-
-          # Path for Application 2
-          #- path: /app2(/|$)(.*) # Matches /app2 or /app2/anything
-          #  pathType: Prefix
-          #  backend:
-          #    service:
-          #      name: my-app-service-2 # Name of Service for Application 2
-          #      port:
-          #        number: 8080         # Port of Application 2's Service (internal port)
-  # Optional: Define a default backend for requests that don't match any rules
-  # defaultBackend:
-  #   service:
-  #     name: default-404-service # A service that returns a 404 page
-  #     port:
-  #       number: 80
+  - host: argocd-server.domain-name.local
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: argocd-server
+            port:
+              number: 80

@@ -1,68 +1,61 @@
-# my-traefik-values.yaml
-apiVersion: v1
-kind: ConfigMap
-metadata:
-  name: traefik-config
-  namespace: traefik
-data:
-  traefik.yaml: |
-    entryPoints:
-      web:
-        address: ":80"
-      websecure:
-        address: ":443"
-        http:
-          tls: {}
-    api:
-      dashboard: true
-    providers:
-      kubernetesCRD: {}
-      kubernetesIngress: {}
-    log:
-      level: INFO
----
-# Helm chart values to integrate with the above ConfigMap
+# traefik-values.yaml
+# Helm chart values for Traefik
+
+# Use non-privileged ports to avoid needing root
+ports:
+  web:
+    port: 30080      # HTTP traffic on non-privileged port
+    hostPort: 30080  # Expose on node port 8000
+  websecure:
+    port: 30443      # HTTPS traffic on non-privileged port
+    hostPort: 30443  # Expose on node port 8443
+    tls:
+      enabled: true
+  traefik:
+    port: 30080      # Dashboard/API
+
+# Enable the Kubernetes Ingress provider
 providers:
-  kubernetesCRD:
-    enabled: true
   kubernetesIngress:
     enabled: true
+    # Watch all namespaces for Ingress resources
+    namespaces: []
+  kubernetesCRD:
+    enabled: true # Enable Kubernetes CRD provider for IngressRoutes
+    watch: false # Disable watching for CRDs to avoid conflicts with IngressRoutes
+    pollInterval: 30s # Polling interval for CRDs
 
-# Enable and configure the dashboard IngressRoute
+# Configure the Traefik service as a LoadBalancer
+service:
+  enabled: true
+  type: LoadBalancer
+  # This tells Traefik to request an IP from MetalLB
+  annotations:
+    metallb.universe.tf/address-pool: pyflowops-ip-pool # Updated to match your IPAddressPool name
+
 ingressRoute:
   dashboard:
     enabled: true
-    # For local testing, you might use a hostname like dashboard.localhost
-    # For production, you'll need a real domain and potentially a CertificateResolver
-    matchRule: "Host(`traefik.pyflowops.com`)" 
-    entryPoints: ["websecure"] # Expose dashboard over HTTPS
-    tls: {} # Enable TLS for the dashboard
+    entryPoints:
+      - websecure
+    matchRule: Host(`traefik.pyflowops.local`)
+    tls: {}
 
-# Configure Traefik service (type LoadBalancer recommended for external access)
-service:
-  type: LoadBalancer
-  annotations: {} # Add cloud-provider specific annotations if needed for LoadBalancer
-  
-# Persistence for ACME (Let's Encrypt) certificates
 persistence:
-  enabled: true
-  storageClassName: standard # Replace with your storage class
-  accessMode: ReadWriteOnce
-  size: 1Gi
+  enabled: false
 
-# Configure certificatesResolvers for Let's Encrypt
-certificatesResolvers:
-  le:
-    acme:
-      email: philip.delorenzol@gmail.com # **IMPORTANT: Change this to your email**
-      storage: traefik-acme.json
-      # Choose one of the following challenges:
-      # httpChallenge:
-      #   entryPoint: web
-      tlsChallenge: {}
-      # dnsChallenge:
-      #   provider: cloudflare # Example provider
-      #   delayBeforeCheck: 0
-      #   resolvers:
-      #     - "1.1.1.1:53"
-      #     - "8.8.8.8:53"
+podSecurityContext:
+  fsGroup: 65532
+  runAsNonRoot: true
+  runAsUser: 65532
+  runAsGroup: 65532
+
+additionalArguments:
+  - "--api.dashboard=true"
+  - "--api.insecure=true"
+
+securityContext:
+  allowPrivilegeEscalation: false
+  capabilities:
+    drop:
+      - ALL

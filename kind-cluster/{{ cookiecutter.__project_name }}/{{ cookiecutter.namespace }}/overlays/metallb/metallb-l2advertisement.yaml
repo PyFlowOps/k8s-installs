@@ -1,0 +1,8 @@
+apiVersion: metallb.io/v1beta1
+kind: L2Advertisement
+metadata:
+  name: my-l2-advertisement
+  namespace: metallb-system # Or the namespace where MetalLB is installed
+spec:
+  ipAddressPools:
+    - pyflowops-ip-pool # Refers to the name of your IPAddressPool
