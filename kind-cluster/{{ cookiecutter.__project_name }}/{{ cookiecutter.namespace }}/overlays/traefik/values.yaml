@@ -4,10 +4,10 @@
 # Use non-privileged ports to avoid needing root
 ports:
   web:
-    port: 80      # HTTP traffic on non-privileged port
+    port: 8080      # HTTP traffic on non-privileged port
     nodePort: 30080  # Expose on node port 8000
   websecure:
-    port: 443      # HTTPS traffic on non-privileged port
+    port: 8443      # HTTPS traffic on non-privileged port
     nodePort: 30443  # Expose on node port 8443
     tls:
       enabled: true

@@ -25,13 +25,13 @@ nodes:
       protocol: TCP
 
     # Optional: Map a custom port for your Python app(s)
-    - containerPort: 8080
-      hostPort: 8080
-      protocol: TCP
+    #- containerPort: 8080
+    #  hostPort: 8080
+    #  protocol: TCP
     
-    - containerPort: 8100
-      hostPort: 8100
-      protocol: TCP
+    #- containerPort: 8100
+    #  hostPort: 8100
+    #  protocol: TCP
   
   # Worker node 1
   - role: worker
