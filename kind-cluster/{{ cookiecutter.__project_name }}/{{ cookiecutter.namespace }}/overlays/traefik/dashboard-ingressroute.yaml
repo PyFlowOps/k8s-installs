@@ -6,7 +6,7 @@ metadata:
   namespace: traefik
 spec:
   entryPoints:
-    - websecure
+    - traefik
   routes:
     - match: Host(`traefik.pyflowops.local`) && PathPrefix(`/dashboard`)
       kind: Rule
