@@ -4,11 +4,11 @@
 # Use non-privileged ports to avoid needing root
 ports:
   web:
-    port: 8888      # HTTP traffic on non-privileged port
-    #hostPort: 30080  # Expose on node port 8000
+    port: 8080      # HTTP traffic on non-privileged port
+    nodePort: 30080  # Expose on node port 8000
   websecure:
     port: 8443      # HTTPS traffic on non-privileged port
-    #hostPort: 30443  # Expose on node port 8443
+    nodePort: 30443  # Expose on node port 8443
     tls:
       enabled: true
   traefik:
@@ -28,7 +28,8 @@ providers:
 # Configure the Traefik service as a LoadBalancer
 service:
   enabled: true
-  type: LoadBalancer
+  type: NodePort # Use NodePort for local development
+  #type: LoadBalancer
   # This tells Traefik to request an IP from MetalLB
   annotations:
     metallb.universe.tf/address-pool: pyflowops-ip-pool # Updated to match your IPAddressPool name
