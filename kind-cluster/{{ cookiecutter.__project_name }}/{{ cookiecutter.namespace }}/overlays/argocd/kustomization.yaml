@@ -6,5 +6,5 @@ resources:
 - argocd-ssh-secret.yaml
 - argocd-app-pfo-documentation.yaml
 - argocd-config.yaml
-- argocd-ingress.yaml
-#- argocd-traefik-ingressroute.yaml
+#- argocd-ingress.yaml
+- argocd-traefik-ingressroute.yaml
