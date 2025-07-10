@@ -11,8 +11,8 @@ ports:
     nodePort: 30443  # Expose on node port 8443
     tls:
       enabled: true
-  #traefik:
-  #  port: 8888     # Dashboard/API
+  traefik:
+    port: 8888     # Dashboard/API
 
 # Enable the Kubernetes Ingress provider
 providers:
