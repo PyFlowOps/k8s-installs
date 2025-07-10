@@ -4,15 +4,15 @@
 # Use non-privileged ports to avoid needing root
 ports:
   web:
-    port: 30080      # HTTP traffic on non-privileged port
-    hostPort: 30080  # Expose on node port 8000
+    port: 8080     # HTTP traffic on non-privileged port
+    #hostPort: 80  # Expose on node port 8000
   websecure:
-    port: 30443      # HTTPS traffic on non-privileged port
-    hostPort: 30443  # Expose on node port 8443
+    port: 8443      # HTTPS traffic on non-privileged port
+    #hostPort: 443  # Expose on node port 8443
     tls:
       enabled: true
   traefik:
-    port: 30080      # Dashboard/API
+    port: 8081      # Dashboard/API
 
 # Enable the Kubernetes Ingress provider
 providers:
