@@ -7,5 +7,5 @@ resources:
 - argocd-ssl-certs.yaml
 - argocd-app-pfo-documentation.yaml
 - argocd-config.yaml
-#- argocd-ingress.yaml
+- argcd-middleware.yaml
 - argocd-traefik-ingressroute.yaml
