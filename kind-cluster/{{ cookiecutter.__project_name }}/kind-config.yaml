@@ -14,6 +14,15 @@ nodes:
         kubeletExtraArgs:
           node-labels: "ingress-ready=true"
     extraPortMappings:
+    - containerPort: 80
+      hostPort: 80
+      protocol: TCP
+    
+    # Map port 30443 on host to port 30443 on this node (for ingress HTTPS)
+    - containerPort: 443
+      hostPort: 443
+      protocol: TCP
+      
     # Map port 30080 on host to port 30080 on this node (for ingress)
     - containerPort: 30080
       hostPort: 30080

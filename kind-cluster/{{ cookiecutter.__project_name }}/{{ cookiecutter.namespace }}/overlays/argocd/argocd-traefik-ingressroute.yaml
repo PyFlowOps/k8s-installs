@@ -31,4 +31,5 @@ spec:
         - name: argocd-server
           port: 80
           passHostHeader: true
-  tls: {}
+  tls:
+    secretName: argocd-tls
