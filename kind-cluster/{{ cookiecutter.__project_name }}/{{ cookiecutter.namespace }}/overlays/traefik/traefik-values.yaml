@@ -1,0 +1,99 @@
+# traefik-values.yaml
+# Helm chart values for Traefik
+#entryPoints:
+#  web:
+#    address: ":80" # Traefik will listen on internal port 80 for HTTP traffic
+#  websecure:
+#    address: ":443" # Traefik will listen on internal port 443 for HTTPS traffic
+#    tls:
+#      enabled: true # Enable TLS for the websecure entrypoint
+
+# Use non-privileged ports to avoid needing root
+ports:
+  web:
+    #port: 8090      # HTTP traffic on non-privileged port
+    expose:
+      enabled: true  # Expose the web entrypoint
+    nodePort: 30080  # Expose on node port 8000
+  websecure:
+    #port: 8443      # HTTPS traffic on non-privileged port
+    expose:
+      enabled: true  # Expose the websecure entrypoint
+    nodePort: 30443  # Expose on node port 8443
+    tls:
+      enabled: true
+  #traefik:
+  #  nodePort: 30888
+  #  #port: 8888     # Dashboard/API
+  #  expose:
+  #    enabled: true
+
+
+# Configure the Traefik service as a LoadBalancer
+service:
+  #enabled: true
+  type: NodePort # Use NodePort for local development
+  #type: LoadBalancer
+  # This tells Traefik to request an IP from MetalLB
+  annotations:
+    metallb.universe.tf/address-pool: pyflowops-ip-pool # Updated to match your IPAddressPool name
+
+  nodePorts:
+    web: 30080      # HTTP traffic on non-privileged port
+    websecure: 30443 # HTTPS traffic on non-privileged port
+    #traefik: 8888   # Dashboard/API on non-privileged port
+
+# Enable the Kubernetes Ingress provider
+providers:
+  kubernetesIngress:
+    enabled: true
+    # Watch all namespaces for Ingress resources
+    #namespaces: []
+  kubernetesCRD:
+    enabled: true # Enable Kubernetes CRD provider for IngressRoutes
+    watch: true # Disable watching for CRDs to avoid conflicts with IngressRoutes
+    pollInterval: 30s # Polling interval for CRDs
+
+# Force the Traefik pod to run on the control-plane node where the ports are mapped
+controller:
+  nodeSelector:
+    ingress-ready: "true"
+  tolerations:
+    - key: node-role.kubernetes.io/control-plane
+      operator: Equal
+      effect: NoSchedule
+    - key: node-role.kubernetes.io/master
+      operator: Equal
+      effect: NoSchedule
+  additionalArguments:
+    #- "--entrypoints.web.address=:8090" # <--- CHANGED: Explicitly set internal HTTP port to 8081
+    #- "--entrypoints.websecure.address=:8443"
+    #- "--entrypoints.websecure.tls=true"
+    - "--api.dashboard=true"
+    - "--api.insecure=true"
+    - "--api.debug=true" # Enable debug mode for Traefik API
+
+# Optional: Enable and expose the Traefik Dashboard (useful for debugging)
+# IMPORTANT: Do not expose the dashboard publicly in production environments
+ingressRoute:
+  dashboard:
+    enabled: true
+    entryPoints:
+      - web
+    matchRule: Host(`traefik.pyflowops.local`)
+    tls: {}
+
+persistence:
+  enabled: false
+
+podSecurityContext:
+  fsGroup: 65532
+  runAsNonRoot: true
+  runAsUser: 65532
+  runAsGroup: 65532
+
+securityContext:
+  allowPrivilegeEscalation: false
+  capabilities:
+    drop:
+      - ALL

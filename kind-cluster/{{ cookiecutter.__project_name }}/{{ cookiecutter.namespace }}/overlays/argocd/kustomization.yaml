@@ -4,6 +4,7 @@ resources:
 # - namespace.yaml # This namespace is completed in the pfo CLI
 - argocd-app-project.yaml
 - argocd-ssh-secret.yaml
+- argocd-ssl-certs.yaml
 - argocd-app-pfo-documentation.yaml
 - argocd-config.yaml
 #- argocd-ingress.yaml
