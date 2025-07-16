@@ -11,12 +11,12 @@
 # Use non-privileged ports to avoid needing root
 ports:
   web:
-    #port: 8090      # HTTP traffic on non-privileged port
+    port: 30080      # HTTP traffic on non-privileged port
     expose:
       enabled: true  # Expose the web entrypoint
     nodePort: 30080  # Expose on node port 8000
   websecure:
-    #port: 8443      # HTTPS traffic on non-privileged port
+    port: 30443      # HTTPS traffic on non-privileged port
     expose:
       enabled: true  # Expose the websecure entrypoint
     nodePort: 30443  # Expose on node port 8443
@@ -66,9 +66,9 @@ controller:
       operator: Equal
       effect: NoSchedule
   additionalArguments:
-    #- "--entrypoints.web.address=:8090" # <--- CHANGED: Explicitly set internal HTTP port to 8081
-    #- "--entrypoints.websecure.address=:8443"
-    #- "--entrypoints.websecure.tls=true"
+    - "--entrypoints.web.address=:30080" # <--- CHANGED: Explicitly set internal HTTP port to 8081
+    - "--entrypoints.websecure.address=:30443"
+    - "--entrypoints.websecure.tls=true"
     - "--api.dashboard=true"
     - "--api.insecure=true"
     - "--api.debug=true" # Enable debug mode for Traefik API

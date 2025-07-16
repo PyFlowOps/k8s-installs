@@ -11,4 +11,4 @@ metadata:
   namespace: argocd
 data:
   server.insecure: "true" # This tells ArgoCD server to accept HTTP connections
-  #url: https://argocd.pyflowops.local:30443
+  url: https://argocd.pyflowops.local:30443
