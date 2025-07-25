@@ -4,3 +4,4 @@ resources:
 - storage/
 - namespace.yaml
 - storage-class.yaml
+- components.yaml
