@@ -47,7 +47,6 @@ jobs:
           uses: release-drafter/release-drafter@v6
           # (Optional) specify config name to use, relative to .github/. Default: release-drafter.yml
           with:
-            version: ${{ inputs.draft_version }}
             config-name: release-drafter-config.yml
           # disable-autolabeler: true
           env:
