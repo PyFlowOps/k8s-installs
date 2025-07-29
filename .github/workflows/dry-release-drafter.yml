@@ -17,11 +17,9 @@ on:
 
 jobs:
   draft-version:
+    if: ${{ github.event_name == 'workflow_call' }}
     name: Draft Release
     runs-on: 'ubuntu-latest'
-    permissions:
-      contents: read
-      pull-requests: write
     steps:
         # Drafts your next Release notes as Pull Requests are merged into "master"
         - name: Set Release Version
@@ -35,6 +33,15 @@ jobs:
           env:
             GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
   
+
+  manual-draft-version:
+    if: ${{ github.event_name == 'workflow_dispatch' }}
+    name: Draft Release (Manual Trigger)
+    runs-on: 'ubuntu-latest'
+    permissions:
+      contents: read
+      pull-requests: write
+    steps:
         - name: Set Release Version
           if: ${{ github.event_name == 'workflow_dispatch' }}
           uses: release-drafter/release-drafter@v6
@@ -44,5 +51,5 @@ jobs:
             config-name: release-drafter-config.yml
           # disable-autolabeler: true
           env:
-            GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+            GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
   
