@@ -133,8 +133,8 @@ jobs:
       GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
   update_release_draft:
-    uses: ./.github/workflows/dry-release-drafter.yml
     needs: [set-release-version, releasePreparation]
+    uses: ./.github/workflows/dry-release-drafter.yml
     with:
       draft_version: ${{ needs.set-release-version.outputs.draft_version }}
     secrets:
