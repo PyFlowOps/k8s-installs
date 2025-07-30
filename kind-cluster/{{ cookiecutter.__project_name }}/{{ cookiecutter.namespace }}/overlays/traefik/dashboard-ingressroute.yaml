@@ -8,12 +8,12 @@ spec:
   entryPoints:
     - web
   routes:
-    - match: Host(`traefik.pyflowops.local`) && PathPrefix(`/dashboard`)
+    - match: Host(`traefik.pyflowops.local`) && (PathPrefix(`/api`) || PathPrefix(`/dashboard`))
       kind: Rule
       services:
         - name: api@internal
           kind: TraefikService
-      middlewares:
-        - name: dashboard-stripprefix
-          namespace: traefik
-  tls: {}
+      #middlewares:
+      #  - name: dashboard-stripprefix
+      #    namespace: traefik
+  #tls: {}
