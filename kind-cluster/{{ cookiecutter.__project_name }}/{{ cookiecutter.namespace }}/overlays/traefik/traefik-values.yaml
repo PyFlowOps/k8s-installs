@@ -1,13 +1,4 @@
-# traefik-values.yaml
 # Helm chart values for Traefik
-#entryPoints:
-#  web:
-#    address: ":80" # Traefik will listen on internal port 80 for HTTP traffic
-#  websecure:
-#    address: ":443" # Traefik will listen on internal port 443 for HTTPS traffic
-#    tls:
-#      enabled: true # Enable TLS for the websecure entrypoint
-
 # Use non-privileged ports to avoid needing root
 ports:
   web:
@@ -22,18 +13,12 @@ ports:
     nodePort: 30443  # Expose on node port 8443
     tls:
       enabled: true
-  #traefik:
-  #  nodePort: 30888
-  #  #port: 8888     # Dashboard/API
-  #  expose:
-  #    enabled: true
-
 
 # Configure the Traefik service as a LoadBalancer
 service:
-  #enabled: true
-  type: NodePort # Use NodePort for local development
-  #type: LoadBalancer
+  enabled: true
+  #type: NodePort # Use NodePort for local development
+  type: LoadBalancer
   # This tells Traefik to request an IP from MetalLB
   annotations:
     metallb.universe.tf/address-pool: pyflowops-ip-pool # Updated to match your IPAddressPool name
@@ -41,14 +26,13 @@ service:
   nodePorts:
     web: 30080      # HTTP traffic on non-privileged port
     websecure: 30443 # HTTPS traffic on non-privileged port
-    #traefik: 8888   # Dashboard/API on non-privileged port
 
 # Enable the Kubernetes Ingress provider
 providers:
   kubernetesIngress:
     enabled: true
     # Watch all namespaces for Ingress resources
-    #namespaces: []
+    namespaces: []
   kubernetesCRD:
     enabled: true # Enable Kubernetes CRD provider for IngressRoutes
     watch: true # Disable watching for CRDs to avoid conflicts with IngressRoutes
@@ -66,7 +50,7 @@ controller:
       operator: Equal
       effect: NoSchedule
   additionalArguments:
-    - "--entrypoints.web.address=:30080" # <--- CHANGED: Explicitly set internal HTTP port to 8081
+    - "--entrypoints.web.address=:30080"
     - "--entrypoints.websecure.address=:30443"
     - "--entrypoints.websecure.tls=true"
     - "--api.dashboard=true"
