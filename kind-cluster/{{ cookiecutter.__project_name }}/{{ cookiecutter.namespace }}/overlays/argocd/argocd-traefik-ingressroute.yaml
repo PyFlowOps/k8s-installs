@@ -10,6 +10,9 @@ spec:
   routes:
     - match: Host(`argocd.pyflowops.local`) && PathPrefix(`/`)
       kind: Rule
+      middlewares:
+        - name: redirect-to-https
+          namespace: argocd
       services:
         - name: argocd-server
           port: 80
@@ -29,7 +32,7 @@ spec:
       kind: Rule
       services:
         - name: argocd-server
-          port: 80
+          port: 80 # Was 443, but changed to 80 for compatibility with IngressRoute
           passHostHeader: true
   tls:
     secretName: argocd-tls
