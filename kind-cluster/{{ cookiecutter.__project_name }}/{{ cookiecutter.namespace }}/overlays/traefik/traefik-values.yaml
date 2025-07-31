@@ -17,8 +17,8 @@ ports:
 # Configure the Traefik service as a LoadBalancer
 service:
   enabled: true
-  #type: NodePort # Use NodePort for local development
-  type: LoadBalancer
+  type: NodePort # Use NodePort for local development
+  #type: LoadBalancer
   # This tells Traefik to request an IP from MetalLB
   annotations:
     metallb.universe.tf/address-pool: pyflowops-ip-pool # Updated to match your IPAddressPool name
