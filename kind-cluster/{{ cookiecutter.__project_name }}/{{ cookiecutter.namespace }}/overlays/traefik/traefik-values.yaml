@@ -2,30 +2,29 @@
 # Use non-privileged ports to avoid needing root
 ports:
   web:
-    port: 30080      # HTTP traffic on non-privileged port
+    port: 30080
+    nodePort: 30080 # Non-privileged port for HTTP
     expose:
-      enabled: true  # Expose the web entrypoint
-    nodePort: 30080  # Expose on node port 8000
+      default: true
   websecure:
-    port: 30443      # HTTPS traffic on non-privileged port
+    port: 30443
+    nodePort: 30443 # Non-privileged port for HTTPS
     expose:
-      enabled: true  # Expose the websecure entrypoint
-    nodePort: 30443  # Expose on node port 8443
+      default: true
     tls:
       enabled: true
 
 # Configure the Traefik service as a LoadBalancer
 service:
+  type: NodePort # Use NodePort for local development -- LoadBalancer for production
   enabled: true
-  type: NodePort # Use NodePort for local development
-  #type: LoadBalancer
 
   # This tells Traefik to request an IP from MetalLB
   annotations:
     metallb.universe.tf/address-pool: pyflowops-ip-pool # Updated to match your IPAddressPool name
 
   nodePorts:
-    web: 30080      # HTTP traffic on non-privileged port
+    web: 30080
     websecure: 30443 # HTTPS traffic on non-privileged port
 
 # Enable the Kubernetes Ingress provider
