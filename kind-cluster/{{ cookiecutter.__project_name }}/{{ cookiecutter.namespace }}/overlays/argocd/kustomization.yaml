@@ -1,7 +1,6 @@
 apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
 resources:
-# - namespace.yaml # This namespace is completed in the pfo CLI
 - argocd-app-project.yaml
 - argocd-ssl-certs.yaml
 - argocd-config.yaml
