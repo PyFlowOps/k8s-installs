@@ -31,7 +31,7 @@ spec:
       kind: Rule
       services:
         - name: argocd-server
-          port: 443
-          scheme: https
+          port: 80 # Would be 443, but ArgoCD server listens on port 80
+          scheme: http # Use http because we are terminating TLS at Traefik
   tls:
     secretName: argocd-tls
