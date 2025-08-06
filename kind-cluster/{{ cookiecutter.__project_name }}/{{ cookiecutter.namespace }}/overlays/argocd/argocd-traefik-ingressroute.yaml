@@ -17,7 +17,6 @@ spec:
         - name: argocd-server
           port: 80
           scheme: http
-          passHostHeader: true
 ---
 apiVersion: traefik.io/v1alpha1
 kind: IngressRoute
@@ -32,7 +31,7 @@ spec:
       kind: Rule
       services:
         - name: argocd-server
-          port: 80 # Was 443, but changed to 80 for compatibility with IngressRoute
-          passHostHeader: true
+          port: 443
+          scheme: https
   tls:
     secretName: argocd-tls
