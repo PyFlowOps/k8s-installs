@@ -42,9 +42,10 @@ kubectl apply -f https://raw.githubusercontent.com/traefik/traefik/v2.11/docs/co
 
 Follow the below steps to create the ArgoCD namespace, install ArgoCD prerequisites, and all subsequent manifests for configuration.
 
-### Step 4.1: Create Namespace
+### Step 4.1: Install Prerequisites
 ```bash
-kubectl create namespace argocd
+cd ~/.pfo/k8s/pyops/prereqs || true \
+    && kustomize build . | kubectl apply -f -
 ```
 
 ### Step 4.2: Install ArgoCD
