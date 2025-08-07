@@ -3,4 +3,4 @@ kind: Kustomization
 resources:
 # - namespace.yaml # This namespace is completed in the pfo CLI
 - argocd/
-- observability/
+- monitoring/
