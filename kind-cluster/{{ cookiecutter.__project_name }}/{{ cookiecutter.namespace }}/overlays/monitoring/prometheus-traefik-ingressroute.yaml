@@ -1,0 +1,17 @@
+---
+apiVersion: traefik.io/v1alpha1
+kind: IngressRoute
+metadata:
+  name: prometheus-server-http
+  namespace: monitoring
+spec:
+  entryPoints:
+    - web
+  routes:
+    - match: Host(`prometheus.pyflowops.local`) && PathPrefix(`/`)
+      kind: Rule
+      services:
+        - name: prometheus-server
+          namespace: monitoring
+          port: 80
+          scheme: http
