@@ -29,8 +29,7 @@ install: ##@prometheus_grafana_loki Installs needed prerequisites and softwared
 
 loki: ##@prometheus_grafana_loki Installs Loki to the k8s cluster
 	$(info ********** Installing Loki Log Aggregation **********)
-	@helm install loki-stack grafana/loki-stack --values loki/loki-stack-values.yaml
-	#-n loki --create-namespace
+	@helm install loki-stack grafana/loki-stack --values loki/loki-stack-values.yaml -n loki --create-namespace
 
 start: ##@prometheus_grafana_loki starts Prometheus/Grafana services on Kubernetes
 	$(info ********** Start Prometheus/Grafana Services **********)
