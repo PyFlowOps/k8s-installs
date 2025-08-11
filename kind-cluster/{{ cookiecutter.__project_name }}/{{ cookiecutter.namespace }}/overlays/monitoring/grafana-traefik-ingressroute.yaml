@@ -12,5 +12,6 @@ spec:
       kind: Rule
       services:
         - name: grafana
+          namespace: monitoring
           port: 80
           scheme: http
