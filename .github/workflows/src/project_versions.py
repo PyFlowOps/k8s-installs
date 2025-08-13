@@ -76,6 +76,8 @@ def _version_check(version: str) -> bool:
 
     return all(part.isdigit() for part in parts)
 
+def version_tuple(v):
+    return tuple(map(int, v.lstrip("v").split(".")))
 
 def prechecks(obj: list[dict]) -> bool:
     """
@@ -125,7 +127,8 @@ def prechecks(obj: list[dict]) -> bool:
                         "The toml version must be greater than the latest version."
                     )
             if _pfo:
-                if not _pfo.split(".") > _latest.lstrip("v").split("."):
+
+                if not version_tuple(_pfo) > version_tuple(_latest):
                     raise Exception(
                         "The pfo version must be greater than the latest version."
                     )
@@ -382,7 +385,7 @@ if __name__ == "__main__":
         print(get_latest_version(obj=obj))
 
     if args.prerelease:
-        obj = get_repo_data() # This is a list of dictionaries from JSON format (json.loads())
+        obj = get_repo_data()  # This is a list of dictionaries from JSON format (json.loads())
         print(get_prerelease_version(obj=obj))
 
     if args.draft:
