@@ -6,14 +6,19 @@ The code to get a Kubernetes Prometheus/Grafana/Loki system running...
 - [Grafana](https://grafana.com/docs/grafana/latest/setup-grafana/){target="_blank"}
 - [Loki](https://grafana.com/docs/loki/latest/){target="_blank"}
 
-# Forward Port to Localhost
+# Accessing Prometheus/Grafana
 
-To access the external service, you will need to forward the port in the cluster to
-your local machine:
+When you create your cluster:
 
 ```bash
-kubectl port-forward svc/grafana 3000:80
+pfo k8s --create
 ```
 
-You should then be able to access your Grafana instance, deployed in your Minikube
-Kubernetes cluster at `http://localhost:3000`.
+The messaging will display the URLs of both Prometheus/Grafana -- If you do not have the information,
+you can access information about cluster by running:
+
+```bash
+pfo k8s --info
+```
+
+## Adding Loki as a Log Aggregation Tool

@@ -76,6 +76,8 @@ def _version_check(version: str) -> bool:
 
     return all(part.isdigit() for part in parts)
 
+def version_tuple(v):
+    return tuple(map(int, v.lstrip("v").split(".")))
 
 def prechecks(obj: list[dict]) -> bool:
     """
@@ -120,28 +122,29 @@ def prechecks(obj: list[dict]) -> bool:
         # If there is a latest release, then the pre-release must be greater than the latest release
         if _latest:
             if _toml:
-                if not _toml.split(".") > _latest.lstrip("v").split("."):
+                if not version_tuple(_toml) > version_tuple(_latest):
                     raise Exception(
                         "The toml version must be greater than the latest version."
                     )
             if _pfo:
-                if not _pfo.split(".") > _latest.lstrip("v").split("."):
+
+                if not version_tuple(_pfo) > version_tuple(_latest):
                     raise Exception(
                         "The pfo version must be greater than the latest version."
                     )
 
             if _prerelease:
-                if not _prerelease.split(".") > _latest.lstrip("v").split("."):
+                if not version_tuple(_prerelease) > version_tuple(_latest):
                     raise Exception(
                         "The pre-release version should be greater than the latest version."
                     )
                 if _toml:
-                    if not _toml.split(".") > _prerelease.lstrip("v").split("."):
+                    if not version_tuple(_toml) > version_tuple(_prerelease):
                         raise Exception(
                             "The toml version must be greater than the pre-release."
                         )
                 if _pfo:
-                    if not _pfo.split(".") > _prerelease.lstrip("v").split("."):
+                    if not version_tuple(_pfo) > version_tuple(_prerelease):
                         raise Exception(
                             "The pfo version must be greater than the pre-release."
                         )
@@ -169,44 +172,36 @@ def prechecks(obj: list[dict]) -> bool:
             if _prerelease:
                 # With ALSO a prerelease, then draft release must be greater than the prerelease
                 # Pre-release must be greater than the latest release
-                if not _draftrelease.lstrip("v").split(".") > _prerelease.lstrip(
-                    "v"
-                ).split("."):
+                if not version_tuple(_draftrelease) > version_tuple(_prerelease):
                     raise Exception(
                         "The version of the draft release must be greater than the prerelease version."
                     )
 
-                if not _prerelease.lstrip("v").split(".") > _latest.lstrip("v").split(
-                    "."
-                ):
+                if not version_tuple(_prerelease) > version_tuple(_latest):
                     raise Exception(
                         "The pre-release version should be greater than the latest version."
                     )
             else:
-                if not _draftrelease.lstrip("v").split(".") > _latest.lstrip("v").split(
-                    "."
-                ):
+                if not version_tuple(_draftrelease) > version_tuple(_latest):
                     raise Exception(
                         "The version of the draft release must be greater than the latest version."
                     )
 
         else:
             if _prerelease:
-                if not _draftrelease.lstrip("v").split(".") > _prerelease.lstrip(
-                    "v"
-                ).split("."):
+                if not version_tuple(_draftrelease) > version_tuple(_prerelease):
                     raise Exception(
                         "The version of the draft release must be greater than the prerelease version."
                     )
 
         # If there's a draft release, it must be the same as the toml version
         if _toml:
-            if not _draftrelease.lstrip("v").split(".") == _toml.split("."):
+            if not version_tuple(_draftrelease) == version_tuple(_toml):
                 raise Exception(
                     "The draft release version must be the same in pyproject.toml."
                 )
         if _pfo:
-            if not _draftrelease.lstrip("v").split(".") == _pfo.split("."):
+            if not version_tuple(_draftrelease) == version_tuple(_pfo):
                 raise Exception(
                     "The draft release version must be the same in pfo.json."
                 )
@@ -378,25 +373,17 @@ if __name__ == "__main__":
         print(get_pfo_version())
 
     if args.latest:
-        obj = (
-            get_repo_data()
-        )  # This is a list of dictionaries from JSON format (json.loads())
+        obj = get_repo_data()  # This is a list of dictionaries from JSON format (json.loads())
         print(get_latest_version(obj=obj))
 
     if args.prerelease:
-        obj = (
-            get_repo_data()
-        )  # This is a list of dictionaries from JSON format (json.loads())
+        obj = get_repo_data()  # This is a list of dictionaries from JSON format (json.loads())
         print(get_prerelease_version(obj=obj))
 
     if args.draft:
-        obj = (
-            get_repo_data()
-        )  # This is a list of dictionaries from JSON format (json.loads())
+        obj = get_repo_data()  # This is a list of dictionaries from JSON format (json.loads())
         print(get_draft_release_version(obj=obj))
 
     if args.draft_release:
-        obj = (
-            get_repo_data()
-        )  # This is a list of dictionaries from JSON format (json.loads())
+        obj = get_repo_data() # This is a list of dictionaries from JSON format (json.loads())
         print(draft_release(obj=obj))

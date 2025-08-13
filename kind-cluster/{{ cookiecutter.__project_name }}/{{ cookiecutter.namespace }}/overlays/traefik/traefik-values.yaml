@@ -1,4 +1,19 @@
 # Helm chart values for Traefik
+# Helm chart values for Traefik# traefik-values.yaml
+metrics:
+  prometheus:
+    addEntryPointsLabels: true
+    addServicesLabels: true 
+    addRoutersLabels: true
+    buckets: "0.1,0.3,1.2,5.0"
+
+# Enable Prometheus ServiceMonitor for automatic discovery
+serviceMonitor:
+  enabled: true
+  namespace: monitoring
+  labels:
+    app: traefik
+
 # Use non-privileged ports to avoid needing root
 ports:
   web:
