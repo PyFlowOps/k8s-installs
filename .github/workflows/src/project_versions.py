@@ -378,25 +378,17 @@ if __name__ == "__main__":
         print(get_pfo_version())
 
     if args.latest:
-        obj = (
-            get_repo_data()
-        )  # This is a list of dictionaries from JSON format (json.loads())
+        obj = get_repo_data()  # This is a list of dictionaries from JSON format (json.loads())
         print(get_latest_version(obj=obj))
 
     if args.prerelease:
-        obj = (
-            get_repo_data()
-        )  # This is a list of dictionaries from JSON format (json.loads())
+        obj = get_repo_data() # This is a list of dictionaries from JSON format (json.loads())
         print(get_prerelease_version(obj=obj))
 
     if args.draft:
-        obj = (
-            get_repo_data()
-        )  # This is a list of dictionaries from JSON format (json.loads())
+        obj = get_repo_data()  # This is a list of dictionaries from JSON format (json.loads())
         print(get_draft_release_version(obj=obj))
 
     if args.draft_release:
-        obj = (
-            get_repo_data()
-        )  # This is a list of dictionaries from JSON format (json.loads())
+        obj = get_repo_data() # This is a list of dictionaries from JSON format (json.loads())
         print(draft_release(obj=obj))
