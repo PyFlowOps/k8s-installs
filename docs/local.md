@@ -1,4 +1,5 @@
 # Kubernetes local development
+
 This section provides a method for developing workloads in a Kubernetes cluster similar
 to how they would be deployed and running within a production Kubernetes cluster.
 
