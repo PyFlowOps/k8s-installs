@@ -20,5 +20,3 @@ you can access information about cluster by running:
 ```bash
 pfo k8s --info
 ```
-
-## Adding Loki as a Log Aggregation Tool
